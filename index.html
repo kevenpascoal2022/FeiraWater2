@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Feira Water</title>
-<meta name="description" content="FeiraWater — Monitoramento da qualidade da água em Feira de Santana.">
+<meta name="description" content="FeiraWater: Monitoramento da qualidade da água em Feira de Santana.">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="FeiraWater.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -176,6 +176,26 @@
   .problema-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:56px; align-items:start;}
   .problema-body p{color:var(--texto-suave); margin-bottom:16px; font-size:1rem;}
   .problema-body strong{color:var(--areia-clara); font-weight:600;}
+  .problema-fotos{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:6px 0 20px;}
+  .problema-fotos figure{margin:0; border-radius:var(--radius); overflow:hidden; border:1px solid var(--linha); background:var(--vidro-agua);}
+  .problema-fotos img{width:100%; height:220px; object-fit:cover; display:block; cursor:zoom-in; transition:transform .25s, filter .25s;}
+  .problema-fotos img:hover, .problema-fotos img:focus-visible{transform:scale(1.03); filter:brightness(1.08);}
+  .problema-fotos figcaption{font-size:.72rem; color:var(--texto-fraco); padding:8px 10px;}
+
+  /* ---------- LIGHTBOX DE FOTO ---------- */
+  .lightbox-overlay{
+    position:fixed; inset:0; z-index:200; background:rgba(4,12,14,.9);
+    backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; padding:24px;
+    cursor:zoom-out;
+  }
+  .lightbox-overlay.open{display:flex;}
+  .lightbox-overlay img{max-width:min(92vw,1100px); max-height:88vh; object-fit:contain; border-radius:12px; box-shadow:0 30px 70px -20px rgba(0,0,0,.7);}
+  .lightbox-close{
+    position:absolute; top:20px; right:24px; background:rgba(8,22,25,.7); border:1px solid var(--linha);
+    color:var(--areia-clara); width:40px; height:40px; border-radius:50%; font-size:1.4rem; line-height:1;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .lightbox-close:hover{border-color:var(--glow-cyan); color:var(--glow-cyan);}
   .fonte-tag{
     display:block; margin-top:26px; font-family:'IBM Plex Mono',monospace; font-size:.72rem;
     color:var(--texto-fraco); border-top:1px solid var(--linha); padding-top:14px;
@@ -206,8 +226,13 @@
   .badge.critico{background:var(--alerta-ferrugem-soft); color:#e79567; border:1px solid rgba(193,96,46,.4);}
   .badge.atencao{background:rgba(200,242,75,.12); color:var(--glow-lime); border:1px solid rgba(200,242,75,.35);}
   .badge.ok{background:var(--glow-cyan-soft); color:var(--glow-cyan); border:1px solid rgba(94,234,224,.35);}
+  .badge-sim{
+    font-family:'IBM Plex Mono',monospace; font-size:.6rem; letter-spacing:.08em;
+    padding:2px 8px; border-radius:100px; white-space:nowrap; text-transform:uppercase;
+    background:rgba(169,200,197,.1); color:var(--texto-fraco); border:1px dashed rgba(169,200,197,.35);
+  }
 
-  .gauge-row{display:flex; align-items:center; gap:14px;}
+  .gauge-row{display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap;}
   .gauge-num{font-family:'Fraunces',serif; font-size:1.7rem;}
   .gauge-lbl{font-size:.74rem; color:var(--texto-fraco); line-height:1.3;}
   .rio-desc{font-size:.88rem; color:var(--texto-suave);}
@@ -217,6 +242,26 @@
   .metric .bar-fill{height:100%; border-radius:4px; background:var(--glow-cyan); transition:width 1s ease;}
   .metric .val{font-family:'IBM Plex Mono',monospace; color:var(--texto-suave); min-width:38px; text-align:right; transition:color .3s ease;}
   .gauge-num{transition:color .4s ease;}
+  .rio-hidroweb{
+    margin-top:2px; font-size:.78rem; font-weight:600; color:var(--glow-cyan);
+    text-decoration:none; display:inline-flex; align-items:center; gap:5px;
+  }
+  .rio-hidroweb:hover{text-decoration:underline;}
+
+  .estacoes-oficiais{
+    margin-top:10px; padding-top:10px; border-top:1px dashed var(--linha);
+    font-size:.74rem; color:var(--texto-fraco);
+  }
+  .estacoes-oficiais .est-tag{
+    font-family:'IBM Plex Mono',monospace; font-size:.62rem; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--glow-cyan); display:block; margin-bottom:4px;
+  }
+  .estacoes-oficiais ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:3px;}
+  .estacoes-oficiais li{display:flex; justify-content:space-between; gap:8px;}
+  .estacoes-oficiais .est-nome{color:var(--texto-suave);}
+  .estacoes-oficiais .est-flag{font-family:'IBM Plex Mono',monospace; font-size:.64rem; white-space:nowrap;}
+  .estacoes-oficiais .est-flag.on{color:var(--glow-lime);}
+  .estacoes-oficiais .est-flag.off{color:var(--texto-fraco);}
 
   /* ---------- LIVE STATUS + CLIMA ---------- */
   .live-status{
@@ -509,6 +554,7 @@
     .logo-main{font-size:1.2rem;}
     .btn-auth, .nav-actions .btn-nav{padding:8px 12px; font-size:.78rem;}
     .user-chip .u-name{max-width:70px;}
+    .problema-fotos{grid-template-columns:1fr;}
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -613,11 +659,6 @@
   .btn-submit.is-loading .spinner{display:block;}
   @keyframes spin{ to{ transform:rotate(360deg); } }
 
-  .photo-input.locked{cursor:pointer; position:relative;}
-  .photo-input.locked input{cursor:pointer;}
-  .photo-lock-msg{display:none; align-items:center; justify-content:center; gap:8px; font-size:.82rem; color:var(--glow-lime); font-weight:600;}
-  .photo-input.locked .ph-txt{display:none;}
-  .photo-input.locked .photo-lock-msg{display:flex;}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -663,7 +704,7 @@
       <h3 id="auth-modal-title">Entrar</h3>
       <button class="modal-close" id="auth-modal-close" type="button" aria-label="Fechar">×</button>
     </div>
-    <p class="modal-sub" id="auth-modal-sub">Faça login ou cadastre-se para poder anexar fotos aos registros de ocorrência.</p>
+    <p class="modal-sub" id="auth-modal-sub">Faça login ou cadastre-se para gerenciar seus registros enviados.</p>
 
     <div id="auth-tabbed-area">
       <div class="auth-tabs">
@@ -727,13 +768,19 @@
             <button type="submit" class="btn-submit" id="register-submit-btn"><span class="spinner"></span>Criar conta</button>
           </div>
         </form>
-        <p class="auth-note">Conta simples para fins do projeto FeiraWater. Válida apenas para reconhecer quem envia fotos — evite usar uma senha que você utiliza em outros lugares.</p>
+        <p class="auth-note">Conta simples para fins do projeto FeiraWater. Válida apenas para reconhecer quem envia fotos. Evite usar uma senha que você utiliza em outros lugares.</p>
       </div>
     </div>
   </div>
 </div>
 
 <!-- ================= MODAL DE DETALHES DO REGISTRO ================= -->
+<!-- ================= LIGHTBOX DE FOTO ================= -->
+<div class="lightbox-overlay" id="lightbox-overlay">
+  <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Fechar imagem">×</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
 <div class="modal-overlay" id="report-modal">
   <div class="modal-card modal-card-lg">
     <div class="modal-top">
@@ -761,7 +808,7 @@
     <div>
       <span class="eyebrow">FeiraWater · Projeto BioGlow 2026/27 · FIRST LEGO League</span>
       <h1>Dados, ciência e comunidade a serviço da <em>água</em> de Feira de Santana.</h1>
-      <p class="lede">Uma iniciativa de biodiversidade dedicada aos rios que sustentam a cidade — Jacuípe, Pojuca e Subaé — reunindo dados de satélite, pesquisa científica e o registro direto da comunidade em uma única plataforma.</p>
+      <p class="lede">Uma iniciativa de biodiversidade dedicada aos rios que sustentam a cidade (Jacuípe, Pojuca e Subaé), reunindo dados de satélite, pesquisa científica e o registro direto da comunidade em uma única plataforma.</p>
       <div class="hero-ctas">
         <a href="#problema" class="btn-primary">Entender o problema →</a>
         <a href="#reportar" class="btn-ghost">Registrar uma ocorrência</a>
@@ -813,16 +860,26 @@
     <div class="section-head">
       <span class="eyebrow-sm">01 · O problema</span>
       <h2>Três rios, uma cidade, uma crise silenciosa</h2>
-      <p>Feira de Santana cresceu ao redor da água — mas hoje trata seus rios como esgoto a céu aberto. É esse o problema de biodiversidade que escolhemos investigar na temporada BioGlow.</p>
+      <p>Feira de Santana cresceu ao redor da água, mas hoje trata seus rios como esgoto a céu aberto. É esse o problema de biodiversidade que escolhemos investigar na temporada BioGlow.</p>
     </div>
 
     <div class="problema-grid">
       <div class="problema-body">
-        <p>Cerca de <strong>60% do território de Feira de Santana</strong> está dentro da bacia do rio Paraguaçu, cujo principal afluente é o <strong>Jacuípe</strong> — responsável, junto com o Subaé e o Pojuca, pelo abastecimento de água da cidade e de parte da Região Metropolitana de Salvador, através da Barragem de Pedra do Cavalo.</p>
-        <p>Só que esses rios estão doentes. Técnicos da Secretaria Municipal do Meio Ambiente já registraram, em análise feita próximo à ponte da BR-116, <strong>5.000 bactérias heterotróficas por litro de água no Jacuípe — dez vezes acima do limite ambiental aceitável (500/litro)</strong>. Mais de 15 riachos despejam esgoto doméstico sem tratamento diretamente no rio dentro dos limites do município.</p>
-        <p>Em abril de 2026, chuvas fortes carregaram um novo volume de lixo acumulado para dentro dos leitos do Jacuípe, do Pojuca e do Subaé, escancarando um problema que já vinha se agravando havia anos: descarte irregular de resíduos, falhas no saneamento e ausência de recuperação ambiental contínua.</p>
-        <p>O desmatamento também tem seu peso: nas últimas décadas, a redução da mata nativa na zona rural diminuiu a pluviosidade local e já secou riachos perenes inteiros, como o Mocó, o Cungú e o Munguzá.</p>
-        <span class="fonte-tag">Fontes: Jornal Grande Bahia (abr/2026) · Feirenses — "A degradação do Rio Jacuípe" · Prefeitura de Feira de Santana / SEMMAM · Câmara Municipal de Feira de Santana</span>
+        <p>Feira de Santana nasceu à beira d'água, e ainda vive dela. Cerca de <strong>60% do território</strong> está na bacia do rio Paraguaçu, e é o <strong>Jacuípe</strong>, junto com o Subaé e o Pojuca, quem abastece a cidade e parte da Região Metropolitana de Salvador.</p>
+
+        <div class="problema-fotos">
+          <figure>
+            <img src="https://images.unsplash.com/photo-1637681316418-dd7a4b6e545e?fm=jpg&q=60&w=1200&auto=format&fit=crop" alt="Margem de rio coberta de lixo acumulado" loading="lazy" class="foto-zoom" tabindex="0" role="button" aria-label="Ampliar imagem: margem de rio coberta de lixo acumulado">
+            <figcaption>Descarte irregular de resíduos às margens de um rio</figcaption>
+          </figure>
+          <figure>
+            <img src="https://images.unsplash.com/photo-1754213623428-b6a9897d7aa9?fm=jpg&q=60&w=1200&auto=format&fit=crop" alt="Córrego poluído com lixo e água esverdeada" loading="lazy" class="foto-zoom" tabindex="0" role="button" aria-label="Ampliar imagem: córrego poluído com lixo e água esverdeada">
+            <figcaption>Água poluída, sinal de esgoto sem tratamento</figcaption>
+          </figure>
+        </div>
+
+        <p>Só que esses rios estão adoecendo bem debaixo do nosso nariz. Perto da ponte da BR-116, o Jacuípe já registrou <strong>dez vezes mais bactérias do que o limite seguro</strong>, recebendo esgoto de mais de 15 riachos sem qualquer tratamento. Em abril de 2026, uma chuva forte escancarou o problema: lavou anos de lixo acumulado direto para dentro dos leitos do Jacuípe, do Pojuca e do Subaé. Some a isso o desmatamento da mata ciliar, que já secou riachos inteiros como o Mocó, o Cungú e o Munguzá, e fica claro que cuidar desses rios é cuidar de quem vive deles.</p>
+        <span class="fonte-tag">Fontes: Jornal Grande Bahia (abr/2026) · Feirenses, "A degradação do Rio Jacuípe" · Prefeitura de Feira de Santana / SEMMAM · Câmara Municipal de Feira de Santana</span>
       </div>
 
       <div class="stat-cards">
@@ -830,17 +887,17 @@
           <div class="n">10×</div>
           <div class="d">acima do limite seguro de bactérias no Jacuípe, na altura da BR-116</div>
         </div>
-        <div class="stat-card">
-          <div class="n">90,7%</div>
-          <div class="d">da população tem água encanada — mas 8.710 pessoas ainda não têm</div>
+        <div class="stat-card warn">
+          <div class="n">9,3%</div>
+          <div class="d">da população não tem água encanada</div>
         </div>
         <div class="stat-card warn">
           <div class="n">284 mil</div>
           <div class="d">habitantes cujo esgoto não é coletado nem tratado</div>
         </div>
-        <div class="stat-card">
-          <div class="n">54,3%</div>
-          <div class="d">de cobertura de esgotamento sanitário no município</div>
+        <div class="stat-card warn">
+          <div class="n">45,7%</div>
+          <div class="d">da população não tem cobertura de esgotamento sanitário no município</div>
         </div>
       </div>
     </div>
@@ -853,7 +910,7 @@
     <div class="section-head">
       <span class="eyebrow-sm">02 · Painel de monitoramento</span>
       <h2>O que os dados revelam</h2>
-      <p>Um retrato do estado dos três rios, construído a partir de reportagens e diagnósticos técnicos recentes, agora com atualização automática em tela e a temperatura atual de Feira de Santana.</p>
+      <p>Um retrato do estado dos três rios, construído a partir de reportagens e diagnósticos técnicos recentes, com a lista de estações oficiais de monitoramento buscada ao vivo na API aberta da ANA/SNIRH e a temperatura atual de Feira de Santana.</p>
     </div>
 
     <div class="live-status">
@@ -863,6 +920,8 @@
       <span id="live-clock">sincronizando…</span>
       <span class="live-sep">·</span>
       <span id="live-updated">última atualização agora</span>
+      <span class="live-sep">·</span>
+      <span>🌡️ temperatura real (Open-Meteo) · 🛰️ estações oficiais (ANA/SNIRH) · 📋 índices dos rios ilustrativos</span>
     </div>
 
     <div class="clima-strip">
@@ -893,6 +952,10 @@
           <div class="metric"><span>Mata ciliar</span><div class="bar-track"><div class="bar-fill" id="bar-jacuipe-mata" data-base="31" style="width:31%;"></div></div><span class="val" id="val-jacuipe-mata">31%</span></div>
           <div class="metric"><span>Acúmulo de lixo</span><div class="bar-track"><div class="bar-fill" id="bar-jacuipe-lixo" data-base="74" style="width:74%;background:var(--alerta-ferrugem);"></div></div><span class="val">alto</span></div>
         </div>
+        <div class="estacoes-oficiais" id="estacoes-jacuipe">
+          <span class="est-tag">Estações oficiais (ANA/SNIRH) · ao vivo</span>
+          <span class="est-status">consultando…</span>
+        </div>
       </div>
 
       <div class="rio-card" data-river="pojuca">
@@ -912,6 +975,10 @@
           <div class="metric"><span>Carga de esgoto</span><div class="bar-track"><div class="bar-fill" id="bar-pojuca-esgoto" data-base="58" style="width:58%;background:var(--glow-lime);"></div></div><span class="val">média</span></div>
           <div class="metric"><span>Mata ciliar</span><div class="bar-track"><div class="bar-fill" id="bar-pojuca-mata" data-base="44" style="width:44%;"></div></div><span class="val" id="val-pojuca-mata">44%</span></div>
           <div class="metric"><span>Acúmulo de lixo</span><div class="bar-track"><div class="bar-fill" id="bar-pojuca-lixo" data-base="63" style="width:63%;background:var(--glow-lime);"></div></div><span class="val">médio</span></div>
+        </div>
+        <div class="estacoes-oficiais" id="estacoes-pojuca">
+          <span class="est-tag">Estações oficiais (ANA/SNIRH) · ao vivo</span>
+          <span class="est-status">consultando…</span>
         </div>
       </div>
 
@@ -933,10 +1000,14 @@
           <div class="metric"><span>Mata ciliar</span><div class="bar-track"><div class="bar-fill" id="bar-subae-mata" data-base="37" style="width:37%;"></div></div><span class="val" id="val-subae-mata">37%</span></div>
           <div class="metric"><span>Acúmulo de lixo</span><div class="bar-track"><div class="bar-fill" id="bar-subae-lixo" data-base="60" style="width:60%;background:var(--glow-lime);"></div></div><span class="val">médio</span></div>
         </div>
+        <div class="estacoes-oficiais" id="estacoes-subae">
+          <span class="est-tag">Estações oficiais (ANA/SNIRH) · ao vivo</span>
+          <span class="est-status">consultando…</span>
+        </div>
       </div>
     </div>
 
-    <p class="disclaimer">⚠️ Os índices-base acima partem de <strong>estimativas ilustrativas</strong> construídas pela equipe a partir de reportagens e diagnósticos públicos — eles oscilam levemente a cada poucos segundos apenas para simular um monitoramento contínuo, não são leituras oficiais de sensores. Já a temperatura exibida acima é real, obtida em tempo real via Open-Meteo. Para dados oficiais de nível e qualidade da água, use os links abaixo.</p>
+    <p class="disclaimer">⚠️ Os índices acima são <strong>estimativas ilustrativas</strong> da equipe, não leituras de sensores. As estações oficiais e a temperatura são dados reais, buscados ao vivo (ANA/SNIRH e Open-Meteo).</p>
 
     <div class="fontes-grid" style="margin-top:22px;">
       <a class="fonte-card" href="https://www.snirh.gov.br/hidroweb/" target="_blank" rel="noopener">
@@ -948,12 +1019,12 @@
       <a class="fonte-card" href="https://plataforma.agua.mapbiomas.org/" target="_blank" rel="noopener">
         <span class="tag">Satélite · MapBiomas</span>
         <h4>MapBiomas Água</h4>
-        <p class="desc">Mapeamento por imagens de satélite da superfície de água no Brasil ao longo do tempo — ótimo para ver o Jacuípe secando ou enchendo.</p>
+        <p class="desc">Mapeamento por imagens de satélite da superfície de água no Brasil ao longo do tempo, ótimo para ver o Jacuípe secando ou enchendo.</p>
         <span class="go">Abrir plataforma ↗</span>
       </a>
       <a class="fonte-card" href="http://www.inema.ba.gov.br/" target="_blank" rel="noopener">
         <span class="tag">Órgão estadual</span>
-        <h4>INEMA — Instituto do Meio Ambiente da Bahia</h4>
+        <h4>INEMA: Instituto do Meio Ambiente da Bahia</h4>
         <p class="desc">Monitoramento oficial da qualidade da água e fiscalização ambiental dos rios baianos, incluindo o Jacuípe.</p>
         <span class="go">Abrir plataforma ↗</span>
       </a>
@@ -990,12 +1061,12 @@
         </div>
         <div class="mapa-frame-wrap">
           <iframe
-            src="https://www.google.com/maps?q=-12.201,-39.021&z=13&output=embed"
+            src="https://www.google.com/maps?q=-12.219,-39.049&z=13&output=embed"
             loading="lazy" title="Mapa do Rio Jacuípe em Feira de Santana"></iframe>
         </div>
         <p class="mapa-desc">Maior rio do município, cruza a zona oeste de Feira e recebe o esgoto de mais de 15 riachos urbanos sem tratamento.</p>
         <div class="mapa-links">
-          <a href="https://www.google.com/maps?q=-12.201,-39.021&z=13" target="_blank" rel="noopener">Abrir mapa maior ↗</a>
+          <a href="https://www.google.com/maps?q=-12.219,-39.049&z=13" target="_blank" rel="noopener">Abrir mapa maior ↗</a>
         </div>
       </div>
 
@@ -1008,12 +1079,12 @@
         </div>
         <div class="mapa-frame-wrap">
           <iframe
-            src="https://www.google.com/maps?q=-12.263,-38.921&z=13&output=embed"
+            src="https://www.google.com/maps?q=-12.273,-38.919&z=13&output=embed"
             loading="lazy" title="Mapa do Rio Subaé em Feira de Santana"></iframe>
         </div>
         <p class="mapa-desc">Nasce dentro da própria cidade, na região da Lagoa do Subaé, e segue rumo ao Recôncavo até a Baía de Todos os Santos.</p>
         <div class="mapa-links">
-          <a href="https://www.google.com/maps?q=-12.263,-38.921&z=13" target="_blank" rel="noopener">Abrir mapa maior ↗</a>
+          <a href="https://www.google.com/maps?q=-12.273,-38.919&z=13" target="_blank" rel="noopener">Abrir mapa maior ↗</a>
         </div>
       </div>
 
@@ -1026,17 +1097,17 @@
         </div>
         <div class="mapa-frame-wrap">
           <iframe
-            src="https://www.google.com/maps?q=-12.050,-38.857&z=13&output=embed"
+            src="https://www.google.com/maps?q=-12.4126306,-38.4715461&z=11&output=embed"
             loading="lazy" title="Mapa do Rio Pojuca em Feira de Santana"></iframe>
         </div>
         <p class="mapa-desc">Nasce na Serra da Mombaça, em Santa Bárbara, e atravessa o norte do município antes de seguir para o litoral norte da Bahia.</p>
         <div class="mapa-links">
-          <a href="https://www.google.com/maps?q=-12.050,-38.857&z=13" target="_blank" rel="noopener">Abrir mapa maior ↗</a>
+          <a href="https://maps.app.goo.gl/2FXvuzEcEBkVCW3m6" target="_blank" rel="noopener">Abrir mapa maior ↗</a>
         </div>
       </div>
     </div>
 
-    <p class="disclaimer">⚠️ Os mapas mostram um ponto de referência aproximado do curso de cada rio dentro do município — os três têm dezenas de quilômetros de extensão, então a posição exata pode variar. Use "Abrir mapa maior" para navegar por todo o curso.</p>
+    <p class="disclaimer">⚠️ Os mapas mostram um ponto de referência aproximado do curso de cada rio dentro do município. Os três têm dezenas de quilômetros de extensão, então a posição exata pode variar. Use "Abrir mapa maior" para navegar por todo o curso.</p>
   </div>
 </section>
 
@@ -1050,7 +1121,7 @@
     <div class="section-head">
       <span class="eyebrow-sm">04 · Pesquisa</span>
       <h2>De onde tiramos nossas informações</h2>
-      <p>Reportagens, diagnósticos técnicos e dados oficiais que a equipe usou para entender o problema antes de propor soluções — a base do nosso Projeto de Inovação.</p>
+      <p>Reportagens, diagnósticos técnicos e dados oficiais que a equipe usou para entender o problema antes de propor soluções: a base do nosso Projeto de Inovação.</p>
     </div>
 
     <div class="fontes-grid">
@@ -1074,7 +1145,7 @@
       </a>
       <a class="fonte-card" href="https://www.aguaesaneamento.org.br/municipios-e-saneamento/ba/feira-de-santana" target="_blank" rel="noopener">
         <span class="tag">Dados oficiais</span>
-        <h4>Diagnóstico de saneamento — Instituto Água e Saneamento</h4>
+        <h4>Diagnóstico de saneamento: Instituto Água e Saneamento</h4>
         <p class="desc">Indicadores completos de abastecimento de água, coleta de esgoto e tarifas em Feira de Santana.</p>
         <span class="go">Ver indicadores ↗</span>
       </a>
@@ -1120,7 +1191,7 @@
           </div>
           <div class="field">
             <label for="f-local">Local (rio, bairro ou ponto de referência)</label>
-            <input type="text" id="f-local" placeholder="Ex.: Rio Jacuípe — ponte da BR-116" required>
+            <input type="text" id="f-local" placeholder="Ex.: Rio Jacuípe, ponte da BR-116" required>
           </div>
           <div class="field">
             <label for="f-desc">O que você observou?</label>
@@ -1132,10 +1203,9 @@
           </div>
           <div class="field">
             <label>Foto (opcional, porém recomendada)</label>
-            <div class="photo-input locked" id="photo-input-wrap">
-              <input type="file" id="f-foto" accept="image/*" capture="environment" disabled>
+            <div class="photo-input" id="photo-input-wrap">
+              <input type="file" id="f-foto" accept="image/*" capture="environment">
               <span class="ph-txt">📷 Tirar foto ou selecionar da galeria</span>
-              <span class="photo-lock-msg">🔒 Faça login para anexar uma foto</span>
             </div>
             <div class="photo-preview" id="photo-preview"><img id="photo-preview-img" alt=""></div>
           </div>
@@ -1171,7 +1241,7 @@
       <span class="bioglow-badge">✦ Sobre a temporada BioGlow</span>
       <h2 style="font-size:clamp(1.6rem,3vw,2.2rem); margin-bottom:16px;">Tecnologia a serviço da biodiversidade</h2>
       <p>BioGlow é a nova temporada da FIRST LEGO League, dedicada à biodiversidade: as equipes investigam problemas reais que afetam ecossistemas locais e propõem soluções de ciência, tecnologia e criatividade para protegê-los.</p>
-      <p>O FeiraWater é o Projeto de Inovação da nossa equipe: uma plataforma dedicada à <strong>água de Feira de Santana</strong> — os rios que sustentam a cidade e que hoje enfrentam poluição, assoreamento e perda de mata ciliar — reunindo dados, pesquisa e a participação direta da comunidade em um único painel.</p>
+      <p>O FeiraWater é o Projeto de Inovação da nossa equipe: uma plataforma dedicada à <strong>água de Feira de Santana</strong>, os rios que sustentam a cidade e que hoje enfrentam poluição, assoreamento e perda de mata ciliar, reunindo dados, pesquisa e a participação direta da comunidade em um único painel.</p>
       <p>Quanto mais pessoas tiverem acesso a essas informações, maior a capacidade da comunidade de agir na preservação do Jacuípe, do Pojuca e do Subaé.</p>
     </div>
     <div class="team-card">
@@ -1183,7 +1253,7 @@
         </div>
       </div>
       <h4>Nossa equipe</h4>
-      <p>RAV Robotics — Feira de Santana, BA</p>
+      <p>RAV Robotics · Feira de Santana, BA</p>
       <ul class="team-list">
         <li><span class="name">Keven</span><span class="role">Programador</span></li>
         <li><span class="name">Enzo de Souza</span><span class="role">Programador</span></li>
@@ -1203,7 +1273,7 @@
 <footer>
   <div class="wrap footer-inner">
     <div class="f-logo">FeiraWater</div>
-    <p class="f-note">Projeto de Inovação — FIRST LEGO League, temporada BioGlow 2026/27. Dados de contexto retirados de reportagens e diagnósticos públicos citados na seção Pesquisa; os índices do painel de monitoramento são ilustrativos.</p>
+    <p class="f-note">Projeto de Inovação: FIRST LEGO League, temporada BioGlow 2026/27. Dados de contexto retirados de reportagens e diagnósticos públicos citados na seção Pesquisa; os índices do painel de monitoramento são ilustrativos.</p>
   </div>
 </footer>
 
@@ -1455,7 +1525,7 @@
     notice.id = 'storage-notice';
     notice.style.cssText = 'font-size:.72rem;color:var(--texto-fraco);margin-top:14px;line-height:1.5;border-left:2px solid var(--glow-lime);padding-left:12px;';
     notice.textContent = hasLocalStorage()
-      ? 'Registros ficam salvos neste navegador (permanecem entre visitas), mas não são compartilhados com outros visitantes — configure o Firestore para um banco de dados real e compartilhado.'
+      ? 'Registros ficam salvos neste navegador (permanecem entre visitas), mas não são compartilhados com outros visitantes. Configure o Firestore para um banco de dados real e compartilhado.'
       : 'Este navegador não permite armazenamento local, então os registros ficam salvos apenas nesta aba, durante esta sessão.';
     const formCard = document.querySelector('.form-card');
     if(formCard) formCard.appendChild(notice);
@@ -1507,7 +1577,7 @@
       case 'auth/invalid-email':
         return 'Informe um e-mail válido.';
       case 'auth/weak-password':
-        return 'Senha muito fraca — use pelo menos 6 caracteres.';
+        return 'Senha muito fraca. Use pelo menos 6 caracteres.';
       case 'auth/user-not-found':
         return 'Não encontramos nenhuma conta com esse e-mail.';
       case 'auth/wrong-password':
@@ -1729,7 +1799,6 @@
 
   /* ===================== FOTO ===================== */
   fotoInput.addEventListener('change', () => {
-    if(!currentUser){ openAuthModal('login'); return; }
     const file = fotoInput.files[0];
     if(!file) return;
     const reader = new FileReader();
@@ -1808,7 +1877,7 @@
             <span class="report-time">${timeAgo(r.ts)}</span>
           </div>
           <div class="report-local">${escapeHtml(r.local)}</div>
-          <div class="report-desc">${escapeHtml(r.desc)}${r.nome ? ' — <em>' + escapeHtml(r.nome) + '</em>' : ''}</div>
+          <div class="report-desc">${escapeHtml(r.desc)}${r.nome ? ' · <em>' + escapeHtml(r.nome) + '</em>' : ''}</div>
         </div>
       `;
       card.addEventListener('click', () => openReportModal(r.id));
@@ -1847,11 +1916,11 @@
       </div>
       <div class="report-detail-row">
         <div class="report-detail-label">Local</div>
-        <div class="report-detail-value">${escapeHtml(r.local) || '—'}</div>
+        <div class="report-detail-value">${escapeHtml(r.local) || 'N/D'}</div>
       </div>
       <div class="report-detail-row">
         <div class="report-detail-label">Descrição</div>
-        <div class="report-detail-value">${escapeHtml(r.desc) || '—'}</div>
+        <div class="report-detail-value">${escapeHtml(r.desc) || 'N/D'}</div>
       </div>
       <div class="report-detail-row">
         <div class="report-detail-label">Enviado por</div>
@@ -1917,8 +1986,8 @@
             <span class="report-cat">${escapeHtml(r.cat)}</span>
             <span class="report-time">${escapeHtml(fullDate(r.ts))}</span>
           </div>
-          <div class="report-local">${escapeHtml(r.local) || '—'}</div>
-          <div class="report-desc">${escapeHtml(r.desc) || '—'}</div>
+          <div class="report-local">${escapeHtml(r.local) || 'N/D'}</div>
+          <div class="report-desc">${escapeHtml(r.desc) || 'N/D'}</div>
           <div class="report-desc">Enviado por: ${r.nome ? escapeHtml(r.nome) : 'Anônimo'}</div>
           <div class="mod-queue-actions">
             <button type="button" class="btn-approve" data-id="${r.id}">✓ Aprovar</button>
@@ -2033,19 +2102,12 @@
     }catch(err){
       console.error('Erro ao carregar registros', err);
       feed.innerHTML = '<div class="feed-empty">Não foi possível carregar os registros agora.</div>';
-      feedCount.textContent = '—';
+      feedCount.textContent = 'N/D';
     }
   }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    if(pendingPhoto && !currentUser){
-      msg.textContent = 'Faça login para enviar uma ocorrência com foto.';
-      msg.className = 'form-msg err';
-      openAuthModal('login');
-      return;
-    }
 
     submitBtn.disabled = true;
     msg.textContent = 'Salvando…';
@@ -2097,6 +2159,36 @@
 
   loadReports();
 
+  /* ===================== LIGHTBOX DE FOTO (seção O Problema) ===================== */
+  (function initLightbox(){
+    const overlay = document.getElementById('lightbox-overlay');
+    const img = document.getElementById('lightbox-img');
+    const closeBtn = document.getElementById('lightbox-close');
+
+    function openLightbox(src, alt){
+      img.src = src;
+      img.alt = alt || '';
+      overlay.classList.add('open');
+    }
+    function closeLightbox(){
+      overlay.classList.remove('open');
+      img.src = '';
+    }
+
+    document.querySelectorAll('.foto-zoom').forEach(el => {
+      el.addEventListener('click', () => openLightbox(el.src, el.alt));
+      el.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openLightbox(el.src, el.alt); }
+      });
+    });
+
+    closeBtn.addEventListener('click', closeLightbox);
+    overlay.addEventListener('click', (e) => { if(e.target === overlay) closeLightbox(); });
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape' && overlay.classList.contains('open')) closeLightbox();
+    });
+  })();
+
   /* ===================== PAINEL EM TEMPO REAL ===================== */
   (function initPainelTempoReal(){
     /* ---- relógio + "última atualização" ---- */
@@ -2115,45 +2207,74 @@
     tickClock();
     setInterval(tickClock, 1000);
 
-    /* ---- simulação de leituras "ao vivo" dos rios ----
-       Os valores-base vêm das estimativas do projeto (ver disclaimer).
-       A cada poucos segundos aplicamos uma pequena variação aleatória,
-       limitada a uma faixa estreita em torno do valor-base, só para dar
-       a sensação de um painel vivo — não é uma leitura real de sensores. */
+    /* ---- índices ilustrativos dos rios ------------------------------
+       Os valores-base (gauge 0–100 e as barras de esgoto/mata/lixo) são
+       estimativas da equipe a partir de reportagens e diagnósticos
+       públicos (ver disclaimer) — nenhum órgão publica isso em tempo
+       real, então eles ficam fixos no valor definido no HTML
+       (data-base) e não oscilam mais sozinhos. */
     const rios = ['jacuipe','pojuca','subae'];
-    const metricasComValor = ['mata']; // métricas cujo texto (%) também deve atualizar
 
-    function jitter(base, range){
-      const v = base + (Math.random() * range * 2 - range);
-      return Math.max(0, Math.min(100, Math.round(v)));
-    }
+    /* ---- estações oficiais de monitoramento, buscadas ao vivo -------
+       Fonte: ANA/SNIRH, camada "Estações Hidrometeorológicas" publicada
+       como ArcGIS FeatureServer aberto (sem chave/token), que devolve
+       JSON via CORS direto para o navegador:
+       https://portal1.snirh.gov.br/server/rest/services/
+         Estações_Hidrometeorológicas_SNIRH/FeatureServer/0/query
+       Isso é bem diferente do HidroWeb "clássico": aqui não precisamos
+       de backend nem de token, só de um fetch() com uma cláusula WHERE
+       filtrando pelo nome do rio. O que essa camada devolve é o
+       CADASTRO das estações (nome, município, se está operando, se é
+       telemétrica) — não a leitura de nível/vazão em tempo real, que
+       continua exigindo o HidroWeb com token (ver disclaimer). */
+    const nomesRio = {
+      jacuipe: 'JACUIPE',
+      pojuca:  'POJUCA',
+      subae:   'SUBAE'
+    };
+    const SNIRH_BASE = 'https://portal1.snirh.gov.br/server/rest/services/Esta%C3%A7%C3%B5es_Hidrometeorol%C3%B3gicas_SNIRH/FeatureServer/0/query';
 
-    function atualizarRio(rio){
-      const gauge = document.getElementById(`gauge-${rio}`);
-      if(gauge){
-        const base = parseFloat(gauge.dataset.base);
-        gauge.textContent = jitter(base, 2);
-      }
-      ['esgoto','mata','lixo'].forEach(metrica => {
-        const bar = document.getElementById(`bar-${rio}-${metrica}`);
-        if(!bar) return;
-        const base = parseFloat(bar.dataset.base);
-        const novo = jitter(base, 4);
-        bar.style.width = novo + '%';
-        if(metricasComValor.includes(metrica)){
-          const val = document.getElementById(`val-${rio}-${metrica}`);
-          if(val) val.textContent = novo + '%';
+    async function carregarEstacoesOficiais(rio){
+      const container = document.getElementById(`estacoes-${rio}`);
+      const statusEl = container ? container.querySelector('.est-status') : null;
+      try{
+        const where = encodeURIComponent(`UPPER(Rio) LIKE '%${nomesRio[rio]}%'`);
+        const outFields = encodeURIComponent('Nome,Municipio,UF,TipoEstacao,Operando,EstacaoTelemetrica');
+        const url = `${SNIRH_BASE}?where=${where}&outFields=${outFields}&returnGeometry=false&f=json`;
+        const res = await fetch(url);
+        if(!res.ok) throw new Error('Falha ao consultar ANA/SNIRH');
+        const data = await res.json();
+        const feats = (data.features || []).map(f => f.attributes);
+
+        if(!statusEl) return;
+        if(!feats.length){
+          statusEl.textContent = 'nenhuma estação encontrada nesta camada para este rio';
+          return;
         }
-      });
+        const lista = document.createElement('ul');
+        feats.slice(0, 4).forEach(est => {
+          const li = document.createElement('li');
+          const nome = document.createElement('span');
+          nome.className = 'est-nome';
+          nome.textContent = `${est.Nome || 'Estação sem nome'} · ${est.Municipio || ''}`;
+          const flag = document.createElement('span');
+          const operando = (est.Operando || '').toUpperCase() === 'SIM';
+          flag.className = 'est-flag ' + (operando ? 'on' : 'off');
+          flag.textContent = operando ? '● operando' : '○ inativa';
+          li.appendChild(nome);
+          li.appendChild(flag);
+          lista.appendChild(li);
+        });
+        statusEl.replaceWith(lista);
+      }catch(err){
+        console.error(`Erro ao consultar estações do rio ${rio}`, err);
+        if(statusEl) statusEl.textContent = 'não foi possível consultar a ANA/SNIRH agora';
+      }
     }
 
-    function tickRios(){
-      rios.forEach(atualizarRio);
-      lastTickAt = Date.now();
-    }
-
-    tickRios();
-    setInterval(tickRios, 7000);
+    Promise.allSettled(rios.map(carregarEstacoesOficiais)).then(() => {
+      lastTickAt = Date.now(); // marca o momento real da última busca às estações
+    });
 
     /* ---- temperatura em tempo real (Open-Meteo, sem necessidade de chave) ---- */
     const climaIcon = document.getElementById('clima-icon');
