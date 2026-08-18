@@ -262,6 +262,8 @@
   .estacoes-oficiais .est-flag{font-family:'IBM Plex Mono',monospace; font-size:.64rem; white-space:nowrap;}
   .estacoes-oficiais .est-flag.on{color:var(--glow-lime);}
   .estacoes-oficiais .est-flag.off{color:var(--texto-fraco);}
+  .estacoes-oficiais a{color:var(--glow-cyan); text-decoration:none; font-weight:600;}
+  .estacoes-oficiais a:hover{text-decoration:underline;}
 
   /* ---------- LIVE STATUS + CLIMA ---------- */
   .live-status{
@@ -910,7 +912,7 @@
     <div class="section-head">
       <span class="eyebrow-sm">02 · Painel de monitoramento</span>
       <h2>O que os dados revelam</h2>
-      <p>Um retrato do estado dos três rios, construído a partir de reportagens e diagnósticos técnicos recentes, com a lista de estações oficiais de monitoramento buscada ao vivo na API aberta da ANA/SNIRH e a temperatura atual de Feira de Santana.</p>
+      <p>Um retrato do estado dos três rios, construído a partir de reportagens e diagnósticos técnicos recentes, com links diretos para as estações oficiais de monitoramento (ANA/SNIRH) e a temperatura atual de Feira de Santana.</p>
     </div>
 
     <div class="live-status">
@@ -921,7 +923,7 @@
       <span class="live-sep">·</span>
       <span id="live-updated">última atualização agora</span>
       <span class="live-sep">·</span>
-      <span>🌡️ temperatura real (Open-Meteo) · 🛰️ estações oficiais (ANA/SNIRH) · 📋 índices dos rios ilustrativos</span>
+      <span>🌡️ temperatura real (Open-Meteo) · 🔗 estações oficiais (ANA/SNIRH) · 📋 índices dos rios ilustrativos</span>
     </div>
 
     <div class="clima-strip">
@@ -953,8 +955,8 @@
           <div class="metric"><span>Acúmulo de lixo</span><div class="bar-track"><div class="bar-fill" id="bar-jacuipe-lixo" data-base="74" style="width:74%;background:var(--alerta-ferrugem);"></div></div><span class="val">alto</span></div>
         </div>
         <div class="estacoes-oficiais" id="estacoes-jacuipe">
-          <span class="est-tag">Estações oficiais (ANA/SNIRH) · ao vivo</span>
-          <span class="est-status">consultando…</span>
+          <span class="est-tag">Estações oficiais</span>
+          <a href="https://www.snirh.gov.br/hidroweb/serieshistoricas" target="_blank" rel="noopener">Consultar rio Jacuípe no SNIRH (ANA) ↗</a>
         </div>
       </div>
 
@@ -977,8 +979,8 @@
           <div class="metric"><span>Acúmulo de lixo</span><div class="bar-track"><div class="bar-fill" id="bar-pojuca-lixo" data-base="63" style="width:63%;background:var(--glow-lime);"></div></div><span class="val">médio</span></div>
         </div>
         <div class="estacoes-oficiais" id="estacoes-pojuca">
-          <span class="est-tag">Estações oficiais (ANA/SNIRH) · ao vivo</span>
-          <span class="est-status">consultando…</span>
+          <span class="est-tag">Estações oficiais</span>
+          <a href="https://www.snirh.gov.br/hidroweb/serieshistoricas" target="_blank" rel="noopener">Consultar rio Pojuca no SNIRH (ANA) ↗</a>
         </div>
       </div>
 
@@ -1001,8 +1003,8 @@
           <div class="metric"><span>Acúmulo de lixo</span><div class="bar-track"><div class="bar-fill" id="bar-subae-lixo" data-base="60" style="width:60%;background:var(--glow-lime);"></div></div><span class="val">médio</span></div>
         </div>
         <div class="estacoes-oficiais" id="estacoes-subae">
-          <span class="est-tag">Estações oficiais (ANA/SNIRH) · ao vivo</span>
-          <span class="est-status">consultando…</span>
+          <span class="est-tag">Estações oficiais</span>
+          <a href="https://www.snirh.gov.br/hidroweb/serieshistoricas" target="_blank" rel="noopener">Consultar rio Subaé no SNIRH (ANA) ↗</a>
         </div>
       </div>
     </div>
@@ -2213,68 +2215,16 @@
        públicos (ver disclaimer) — nenhum órgão publica isso em tempo
        real, então eles ficam fixos no valor definido no HTML
        (data-base) e não oscilam mais sozinhos. */
-    const rios = ['jacuipe','pojuca','subae'];
 
-    /* ---- estações oficiais de monitoramento, buscadas ao vivo -------
-       Fonte: ANA/SNIRH, camada "Estações Hidrometeorológicas" publicada
-       como ArcGIS FeatureServer aberto (sem chave/token), que devolve
-       JSON via CORS direto para o navegador:
-       https://portal1.snirh.gov.br/server/rest/services/
-         Estações_Hidrometeorológicas_SNIRH/FeatureServer/0/query
-       Isso é bem diferente do HidroWeb "clássico": aqui não precisamos
-       de backend nem de token, só de um fetch() com uma cláusula WHERE
-       filtrando pelo nome do rio. O que essa camada devolve é o
-       CADASTRO das estações (nome, município, se está operando, se é
-       telemétrica) — não a leitura de nível/vazão em tempo real, que
-       continua exigindo o HidroWeb com token (ver disclaimer). */
-    const nomesRio = {
-      jacuipe: 'JACUIPE',
-      pojuca:  'POJUCA',
-      subae:   'SUBAE'
-    };
-    const SNIRH_BASE = 'https://portal1.snirh.gov.br/server/rest/services/Esta%C3%A7%C3%B5es_Hidrometeorol%C3%B3gicas_SNIRH/FeatureServer/0/query';
-
-    async function carregarEstacoesOficiais(rio){
-      const container = document.getElementById(`estacoes-${rio}`);
-      const statusEl = container ? container.querySelector('.est-status') : null;
-      try{
-        const where = encodeURIComponent(`UPPER(Rio) LIKE '%${nomesRio[rio]}%'`);
-        const outFields = encodeURIComponent('Nome,Municipio,UF,TipoEstacao,Operando,EstacaoTelemetrica');
-        const url = `${SNIRH_BASE}?where=${where}&outFields=${outFields}&returnGeometry=false&f=json`;
-        const res = await fetch(url);
-        if(!res.ok) throw new Error('Falha ao consultar ANA/SNIRH');
-        const data = await res.json();
-        const feats = (data.features || []).map(f => f.attributes);
-
-        if(!statusEl) return;
-        if(!feats.length){
-          statusEl.textContent = 'nenhuma estação encontrada nesta camada para este rio';
-          return;
-        }
-        const lista = document.createElement('ul');
-        feats.slice(0, 4).forEach(est => {
-          const li = document.createElement('li');
-          const nome = document.createElement('span');
-          nome.className = 'est-nome';
-          nome.textContent = `${est.Nome || 'Estação sem nome'} · ${est.Municipio || ''}`;
-          const flag = document.createElement('span');
-          const operando = (est.Operando || '').toUpperCase() === 'SIM';
-          flag.className = 'est-flag ' + (operando ? 'on' : 'off');
-          flag.textContent = operando ? '● operando' : '○ inativa';
-          li.appendChild(nome);
-          li.appendChild(flag);
-          lista.appendChild(li);
-        });
-        statusEl.replaceWith(lista);
-      }catch(err){
-        console.error(`Erro ao consultar estações do rio ${rio}`, err);
-        if(statusEl) statusEl.textContent = 'não foi possível consultar a ANA/SNIRH agora';
-      }
-    }
-
-    Promise.allSettled(rios.map(carregarEstacoesOficiais)).then(() => {
-      lastTickAt = Date.now(); // marca o momento real da última busca às estações
-    });
+    /* ---- estações oficiais de monitoramento --------------------------
+       Testamos consultar ao vivo, direto do navegador, a camada aberta
+       "Estações Hidrometeorológicas" da ANA/SNIRH (ArcGIS FeatureServer,
+       sem chave/token). Na prática o servidor não libera CORS para
+       domínios de terceiros — só para os domínios oficiais dele mesmo —
+       então um fetch() daqui sempre falha, publicado ou não. Sem um
+       backend próprio fazendo essa consulta por trás, a única forma
+       honesta de linkar isso é com um link estático direto para o
+       SNIRH, que é o que os botões de cada card fazem agora. */
 
     /* ---- temperatura em tempo real (Open-Meteo, sem necessidade de chave) ---- */
     const climaIcon = document.getElementById('clima-icon');
