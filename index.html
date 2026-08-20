@@ -289,21 +289,7 @@
   .estacoes-oficiais a{color:var(--glow-cyan); text-decoration:none; font-weight:600;}
   .estacoes-oficiais a:hover{text-decoration:underline;}
 
-  /* ---------- LIVE STATUS + CLIMA ---------- */
-  .live-status{
-    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
-    font-family:'IBM Plex Mono',monospace; font-size:.72rem; letter-spacing:.06em;
-    color:var(--texto-fraco); margin:-26px 0 30px;
-  }
-  .live-dot{
-    width:8px; height:8px; border-radius:50%; flex-shrink:0;
-    background:var(--glow-lime);
-    box-shadow:0 0 8px 2px rgba(200,242,75,.35);
-    animation:pulse 2.2s ease-in-out infinite;
-  }
-  .live-status .live-label{color:var(--glow-lime); text-transform:uppercase; font-weight:600;}
-  .live-status .live-sep{color:var(--texto-fraco); opacity:.5;}
-
+  /* ---------- CLIMA ---------- */
   .clima-strip{
     display:flex; align-items:center; gap:18px; flex-wrap:wrap;
     background:var(--vidro-agua); border:1px solid var(--linha); border-radius:var(--radius);
@@ -939,17 +925,6 @@
       <p>Um retrato do estado dos três rios, construído a partir de reportagens e diagnósticos técnicos recentes, com links diretos para as estações oficiais de monitoramento (ANA/SNIRH) e a temperatura atual de Feira de Santana.</p>
     </div>
 
-    <div class="live-status">
-      <span class="live-dot"></span>
-      <span class="live-label">Ao vivo</span>
-      <span class="live-sep">·</span>
-      <span id="live-clock">sincronizando…</span>
-      <span class="live-sep">·</span>
-      <span id="live-updated">última atualização agora</span>
-      <span class="live-sep">·</span>
-      <span>🌡️ temperatura real (Open-Meteo) · 🛰️ estações oficiais via proxy (ANA/SNIRH) · 📋 índices dos rios ilustrativos</span>
-    </div>
-
     <div class="clima-strip">
       <div class="clima-icon" id="clima-icon">🌤️</div>
       <div class="clima-info">
@@ -978,9 +953,9 @@
           <div class="metric"><span>Mata ciliar</span><div class="bar-track"><div class="bar-fill" id="bar-jacuipe-mata" data-base="31" style="width:31%;"></div></div><span class="val" id="val-jacuipe-mata">31%</span></div>
           <div class="metric"><span>Acúmulo de lixo</span><div class="bar-track"><div class="bar-fill" id="bar-jacuipe-lixo" data-base="74" style="width:74%;background:var(--alerta-ferrugem);"></div></div><span class="val">alto</span></div>
         </div>
-        <div class="estacoes-oficiais" id="estacoes-jacuipe" data-rio="JACUIPE" data-fallback-url="https://www.snirh.gov.br/hidroweb/serieshistoricas" data-fallback-nome="Jacuípe">
+        <div class="estacoes-oficiais">
           <span class="est-tag">Estações oficiais (ANA/SNIRH)</span>
-          <span class="est-status est-dynamic">consultando…</span>
+          <a class="est-dynamic" href="https://www.snirh.gov.br/hidroweb/serieshistoricas" target="_blank" rel="noopener">Consultar rio Jacuípe no SNIRH (ANA) ↗</a>
         </div>
       </div>
 
@@ -1002,9 +977,9 @@
           <div class="metric"><span>Mata ciliar</span><div class="bar-track"><div class="bar-fill" id="bar-pojuca-mata" data-base="44" style="width:44%;"></div></div><span class="val" id="val-pojuca-mata">44%</span></div>
           <div class="metric"><span>Acúmulo de lixo</span><div class="bar-track"><div class="bar-fill" id="bar-pojuca-lixo" data-base="63" style="width:63%;background:var(--glow-lime);"></div></div><span class="val">médio</span></div>
         </div>
-        <div class="estacoes-oficiais" id="estacoes-pojuca" data-rio="POJUCA" data-fallback-url="https://www.snirh.gov.br/hidroweb/serieshistoricas" data-fallback-nome="Pojuca">
+        <div class="estacoes-oficiais">
           <span class="est-tag">Estações oficiais (ANA/SNIRH)</span>
-          <span class="est-status est-dynamic">consultando…</span>
+          <a class="est-dynamic" href="https://www.snirh.gov.br/hidroweb/serieshistoricas" target="_blank" rel="noopener">Consultar rio Pojuca no SNIRH (ANA) ↗</a>
         </div>
       </div>
 
@@ -1026,14 +1001,14 @@
           <div class="metric"><span>Mata ciliar</span><div class="bar-track"><div class="bar-fill" id="bar-subae-mata" data-base="37" style="width:37%;"></div></div><span class="val" id="val-subae-mata">37%</span></div>
           <div class="metric"><span>Acúmulo de lixo</span><div class="bar-track"><div class="bar-fill" id="bar-subae-lixo" data-base="60" style="width:60%;background:var(--glow-lime);"></div></div><span class="val">médio</span></div>
         </div>
-        <div class="estacoes-oficiais" id="estacoes-subae" data-rio="SUBAE" data-fallback-url="https://www.snirh.gov.br/hidroweb/serieshistoricas" data-fallback-nome="Subaé">
+        <div class="estacoes-oficiais">
           <span class="est-tag">Estações oficiais (ANA/SNIRH)</span>
-          <span class="est-status est-dynamic">consultando…</span>
+          <a class="est-dynamic" href="https://www.snirh.gov.br/hidroweb/serieshistoricas" target="_blank" rel="noopener">Consultar rio Subaé no SNIRH (ANA) ↗</a>
         </div>
       </div>
     </div>
 
-    <p class="disclaimer">⚠️ Os índices acima são <strong>estimativas ilustrativas</strong> da equipe, não leituras de sensores. As estações oficiais são buscadas ao vivo na ANA/SNIRH (via proxy CORS, com link direto como reserva se o proxy estiver fora do ar) e a temperatura vem do Open-Meteo.</p>
+    <p class="disclaimer">⚠️ Os índices acima são <strong>estimativas ilustrativas</strong> da equipe, não leituras de sensores. Os links para as estações oficiais levam diretamente ao portal ANA/SNIRH para consulta. A temperatura exibida acima é a única informação atualizada em tempo real, obtida via Open-Meteo.</p>
 
     <div class="fontes-grid" style="margin-top:22px;">
       <a class="fonte-card" href="https://www.snirh.gov.br/hidroweb/" target="_blank" rel="noopener">
@@ -2247,138 +2222,19 @@
     });
   })();
 
-  /* ===================== PAINEL EM TEMPO REAL ===================== */
-  (function initPainelTempoReal(){
-    /* ---- relógio + "última atualização" ---- */
-    const clockEl = document.getElementById('live-clock');
-    const updatedEl = document.getElementById('live-updated');
-    let lastTickAt = Date.now();
-
-    function tickClock(){
-      if(!clockEl) return;
-      clockEl.textContent = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-      const secs = Math.round((Date.now() - lastTickAt) / 1000);
-      if(updatedEl){
-        updatedEl.textContent = secs < 2 ? 'atualizado agora' : `dados renovados há ${secs}s`;
-      }
-    }
-    tickClock();
-    setInterval(tickClock, 1000);
-
+  /* ===================== PAINEL DE MONITORAMENTO ===================== */
+  (function initPainel(){
     /* ---- índices ilustrativos dos rios ------------------------------
        Os valores-base (gauge 0–100 e as barras de esgoto/mata/lixo) são
        estimativas da equipe a partir de reportagens e diagnósticos
        públicos (ver disclaimer) — nenhum órgão publica isso em tempo
        real, então eles ficam fixos no valor definido no HTML
-       (data-base) e não oscilam mais sozinhos. */
+       (data-base) e não oscilam sozinhos. */
 
     /* ---- estações oficiais de monitoramento --------------------------
-       O servidor da ANA/SNIRH (ArcGIS FeatureServer, camada "Estações
-       Hidrometeorológicas") não libera CORS para domínios de terceiros,
-       então um fetch() direto daqui sempre é bloqueado pelo navegador —
-       publicado ou não, isso não muda.
-       A forma real de contornar isso sem montar um backend próprio é
-       passar por um proxy CORS público: um serviço que busca o dado no
-       servidor da ANA por trás (onde CORS não se aplica, é servidor
-       falando com servidor) e devolve pra nossa página já com os
-       cabeçalhos de CORS liberados. Tentamos dois proxies em sequência
-       (allorigins e corsproxy.io); se os dois estiverem fora do ar, cai
-       automaticamente no link direto pro SNIRH. Como são serviços
-       gratuitos de terceiros, podem ocasionalmente ficar lentos ou
-       indisponíveis — por isso a cadeia de fallback. */
-    const SNIRH_QUERY_URL = 'https://portal1.snirh.gov.br/server/rest/services/Esta%C3%A7%C3%B5es_Hidrometeorol%C3%B3gicas_SNIRH/FeatureServer/0/query';
-
-    function montarUrlSnirh(rio){
-      const where = encodeURIComponent(`UPPER(Rio) LIKE '%${rio}%'`);
-      const outFields = encodeURIComponent('Nome,Municipio,UF,Operando');
-      return `${SNIRH_QUERY_URL}?where=${where}&outFields=${outFields}&returnGeometry=false&f=json`;
-    }
-
-    function proxiesPara(alvo){
-      const enc = encodeURIComponent(alvo);
-      return [
-        `https://api.allorigins.win/raw?url=${enc}`,
-        `https://corsproxy.io/?url=${enc}`
-      ];
-    }
-
-    async function buscarJsonComProxy(alvo){
-      let ultimoErro;
-      for(const proxyUrl of proxiesPara(alvo)){
-        try{
-          const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
-          if(!res.ok) throw new Error(`HTTP ${res.status}`);
-          const data = await res.json();
-          if(data && data.error) throw new Error('resposta com erro');
-          return data;
-        }catch(err){
-          ultimoErro = err;
-        }
-      }
-      throw ultimoErro || new Error('todos os proxies falharam');
-    }
-
-    function renderEstacoes(container, feats){
-      const dynEl = container.querySelector('.est-dynamic');
-      if(!feats.length){
-        const vazio = document.createElement('span');
-        vazio.className = 'est-status est-dynamic';
-        vazio.textContent = 'nenhuma estação cadastrada nesta camada para este rio';
-        if(dynEl) dynEl.replaceWith(vazio); else container.appendChild(vazio);
-        return;
-      }
-      const lista = document.createElement('ul');
-      lista.className = 'est-dynamic';
-      feats.slice(0, 4).forEach(f => {
-        const est = f.attributes || f;
-        const li = document.createElement('li');
-        const nome = document.createElement('span');
-        nome.className = 'est-nome';
-        nome.textContent = `${est.Nome || 'Estação sem nome'} · ${est.Municipio || ''}`;
-        const flag = document.createElement('span');
-        const operando = String(est.Operando || '').toUpperCase() === 'SIM';
-        flag.className = 'est-flag ' + (operando ? 'on' : 'off');
-        flag.textContent = operando ? '● operando' : '○ inativa';
-        li.appendChild(nome);
-        li.appendChild(flag);
-        lista.appendChild(li);
-      });
-      if(dynEl) dynEl.replaceWith(lista); else container.appendChild(lista);
-    }
-
-    function renderFallback(container){
-      const dynEl = container.querySelector('.est-dynamic');
-      const link = document.createElement('a');
-      link.className = 'est-dynamic';
-      link.href = container.dataset.fallbackUrl;
-      link.target = '_blank';
-      link.rel = 'noopener';
-      link.textContent = `Consultar rio ${container.dataset.fallbackNome} no SNIRH (ANA) ↗`;
-      if(dynEl) dynEl.replaceWith(link); else container.appendChild(link);
-    }
-
-    async function carregarEstacoesOficiais(container){
-      const rio = container.dataset.rio;
-      try{
-        const data = await buscarJsonComProxy(montarUrlSnirh(rio));
-        renderEstacoes(container, data.features || []);
-      }catch(err){
-        console.error(`Não foi possível buscar estações do rio ${rio} via proxy`, err);
-        renderFallback(container);
-      }
-    }
-
-    /* Busca inicial + atualização automática a cada 5 minutos. O texto
-       "dados renovados há Ns" (perto do relógio) passa a refletir o
-       momento real da última busca às estações, não só o carregamento
-       da página. */
-    function atualizarTodasEstacoes(){
-      const containers = document.querySelectorAll('.estacoes-oficiais[data-rio]');
-      Promise.allSettled(Array.from(containers).map(carregarEstacoesOficiais))
-        .then(() => { lastTickAt = Date.now(); });
-    }
-    atualizarTodasEstacoes();
-    setInterval(atualizarTodasEstacoes, 5 * 60 * 1000);
+       Os cards trazem apenas um link direto para o portal ANA/SNIRH,
+       onde qualquer pessoa pode consultar as estações oficiais daquele
+       rio. Não há busca automática nem atualização periódica aqui. */
 
     /* ---- temperatura em tempo real (Open-Meteo, sem necessidade de chave) ---- */
     const climaIcon = document.getElementById('clima-icon');
