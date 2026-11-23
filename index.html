@@ -713,12 +713,258 @@
   .btn-submit.is-loading .spinner{display:block;}
   @keyframes spin{ to{ transform:rotate(360deg); } }
 
+  /* =====================================================================
+     EFEITOS EXTRAS · camada visual adicional
+     ===================================================================== */
+
+  /* barra de progresso da rolagem */
+  .scroll-progress{
+    position:fixed; top:0; left:0; right:0; height:3px; z-index:60; pointer-events:none;
+    transform-origin:0 50%; transform:scaleX(0);
+    background:linear-gradient(90deg,var(--glow-cyan),var(--glow-lime));
+    box-shadow:0 0 12px rgba(94,234,224,.6);
+  }
+
+  /* nav: sombra ao rolar + link da seção atual */
+  header.nav{transition:background .3s, box-shadow .3s;}
+  header.nav.scrolled{background:rgba(8,22,25,.92); box-shadow:0 12px 30px -20px rgba(0,0,0,.9);}
+  nav.links a.active{color:var(--glow-cyan); border-color:var(--glow-cyan);}
+
+  /* revelar ao rolar (usa "translate" para não brigar com o hover dos cards) */
+  .js-fx .reveal{
+    opacity:0; translate:0 28px;
+    transition:opacity .8s cubic-bezier(.2,.7,.2,1) var(--d,0s), translate .8s cubic-bezier(.2,.7,.2,1) var(--d,0s),
+               transform .25s, border-color .25s, box-shadow .25s, filter .25s;
+  }
+  .js-fx .reveal.in{opacity:1; translate:0 0;}
+
+  /* brilho que segue o mouse nos cards */
+  .fx-card{position:relative; isolation:isolate;}
+  .fx-card::before{
+    content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:-1;
+    background:radial-gradient(380px circle at var(--mx,50%) var(--my,50%), rgba(94,234,224,.13), transparent 45%);
+    opacity:0; transition:opacity .35s;
+  }
+  .fx-card:hover::before{opacity:1;}
+  .rio-card, .mapa-card, .stat-card, .form-card, .team-card{transition:transform .25s, border-color .25s, box-shadow .25s;}
+  .rio-card:hover, .mapa-card:hover, .stat-card:hover{
+    border-color:rgba(94,234,224,.38); transform:translateY(-4px);
+    box-shadow:0 18px 40px -22px rgba(0,0,0,.8), 0 0 0 1px rgba(94,234,224,.08), 0 0 32px -12px rgba(94,234,224,.35);
+  }
+  .stat-card.warn:hover{border-color:rgba(193,96,46,.5); box-shadow:0 18px 40px -22px rgba(0,0,0,.8), 0 0 32px -12px rgba(193,96,46,.45);}
+  .fonte-card:hover{box-shadow:0 14px 30px -18px rgba(0,0,0,.8), 0 0 26px -12px rgba(94,234,224,.4);}
+  .fonte-card .go{display:inline-block; transition:transform .25s;}
+  .fonte-card:hover .go{transform:translateX(4px);}
+
+  /* detalhe nos títulos de seção */
+  .eyebrow-sm{display:inline-flex; align-items:center; gap:10px;}
+  .eyebrow-sm::before{
+    content:''; width:26px; height:1.5px; border-radius:2px;
+    background:linear-gradient(90deg,var(--glow-lime),transparent);
+  }
+
+  /* HERO: texto com brilho, anéis girando */
+  .hero .wrap{position:relative; z-index:1;}
+  .hero h1 em{
+    background:linear-gradient(90deg,var(--glow-cyan),var(--glow-lime),var(--glow-cyan));
+    background-size:200% auto; -webkit-background-clip:text; background-clip:text;
+    animation:shimmer 6s linear infinite;
+  }
+  @keyframes shimmer{to{background-position:200% center;}}
+  .orbit-ring{transform-box:view-box; transform-origin:center; animation:orbitSpin 60s linear infinite;}
+  .orbit-ring.rev{animation-duration:42s; animation-direction:reverse;}
+  @keyframes orbitSpin{to{transform:rotate(360deg);}}
+  .river-orbit{filter:drop-shadow(0 0 18px rgba(94,234,224,.18));}
+  .hero-stat{transition:transform .25s, border-color .25s, box-shadow .25s;}
+  .hero-stat:hover{transform:translateY(-3px); border-color:rgba(94,234,224,.4); box-shadow:0 0 24px -10px rgba(94,234,224,.5);}
+  .btn-primary{position:relative; overflow:hidden;}
+  .btn-primary::after{
+    content:''; position:absolute; top:0; left:-60%; width:40%; height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,255,255,.6), transparent); transform:skewX(-20deg);
+  }
+  .btn-primary:hover::after{animation:btn-shine 1.1s ease forwards;}
+
+  /* fotos do problema */
+  .problema-fotos figure{transition:border-color .25s, box-shadow .25s;}
+  .problema-fotos figure:hover{border-color:rgba(94,234,224,.4); box-shadow:0 0 28px -12px rgba(94,234,224,.5);}
+  .stat-card{position:relative; overflow:hidden;}
+  .stat-card::after{
+    content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+    background:linear-gradient(180deg,var(--glow-cyan),transparent);
+  }
+  .stat-card.warn::after{background:linear-gradient(180deg,var(--alerta-ferrugem),transparent);}
+
+  /* faixa de clima */
+  .clima-strip{
+    position:relative; overflow:hidden;
+    background:linear-gradient(120deg, var(--vidro-agua), var(--vidro-agua-2) 60%, rgba(200,242,75,.06));
+  }
+  .clima-strip::after{
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(100deg, transparent 30%, rgba(94,234,224,.07) 50%, transparent 70%);
+    background-size:250% 100%; animation:climaSweep 7s ease-in-out infinite;
+  }
+  @keyframes climaSweep{0%{background-position:120% 0;} 100%{background-position:-120% 0;}}
+  .clima-icon{animation:mascotFloat 5s ease-in-out infinite; filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));}
+  .live-pill{
+    margin-left:auto; display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono',monospace; font-size:.66rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--glow-lime); border:1px solid rgba(200,242,75,.3); background:rgba(200,242,75,.08);
+    padding:6px 12px; border-radius:100px;
+  }
+  .live-dot{width:7px; height:7px; border-radius:50%; background:var(--glow-lime); box-shadow:0 0 0 0 rgba(200,242,75,.6); animation:livePing 1.8s ease-out infinite;}
+  @keyframes livePing{0%{box-shadow:0 0 0 0 rgba(200,242,75,.6);} 100%{box-shadow:0 0 0 9px rgba(200,242,75,0);}}
+
+  /* barras do painel com brilho na ponta */
+  .metric .bar-fill{position:relative; transition:width 1.4s cubic-bezier(.2,.7,.2,1);}
+  .metric .bar-fill::after{
+    content:''; position:absolute; right:0; top:50%; width:8px; height:8px; margin-top:-4px; border-radius:50%;
+    background:inherit; filter:blur(3px); opacity:.9;
+  }
+  .rio-card .badge.critico{animation:badgeAlert 2.4s ease-in-out infinite;}
+  @keyframes badgeAlert{0%,100%{box-shadow:0 0 0 0 rgba(193,96,46,0);} 50%{box-shadow:0 0 14px 1px rgba(193,96,46,.45);}}
+
+  /* avisos (disclaimer) como caixa de destaque */
+  .disclaimer{
+    background:linear-gradient(90deg, rgba(200,242,75,.07), transparent 80%);
+    border:1px solid rgba(200,242,75,.16); border-left:3px solid var(--glow-lime);
+    border-radius:0 12px 12px 0; padding:14px 18px; line-height:1.6;
+  }
+  .disclaimer strong{color:var(--areia-clara);}
+
+  /* mapas */
+  .mapa-frame-wrap iframe{filter:saturate(.85) contrast(1.05); transition:filter .3s;}
+  .mapa-card:hover .mapa-frame-wrap iframe{filter:none;}
+  .mapa-pin{
+    display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; flex-shrink:0;
+    border-radius:50%; background:var(--glow-cyan-soft); border:1px solid rgba(94,234,224,.35); color:var(--glow-cyan);
+  }
+  .mapa-pin svg{width:15px; height:15px;}
+
+  /* ARTIGOS CIENTÍFICOS: de texto corrido para cards */
+  .artigos-texto{display:grid; grid-template-columns:repeat(2,1fr); gap:22px; max-width:none;}
+  .artigo-item{
+    position:relative; overflow:hidden;
+    background:linear-gradient(160deg, var(--vidro-agua), var(--vidro-agua-2));
+    border:1px solid var(--linha); border-radius:var(--radius); padding:30px 28px 24px;
+    display:flex; flex-direction:column;
+    transition:transform .25s, border-color .25s, box-shadow .25s;
+  }
+  .artigo-item::after{
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:linear-gradient(90deg,var(--glow-cyan),var(--glow-lime),transparent);
+  }
+  .artigo-item:hover{transform:translateY(-4px); border-color:rgba(94,234,224,.38); box-shadow:0 18px 40px -22px rgba(0,0,0,.8), 0 0 32px -12px rgba(94,234,224,.35);}
+  .artigo-num{
+    position:absolute; right:18px; top:6px; font-family:'Fraunces',serif; font-weight:700; font-size:5rem; line-height:1;
+    color:transparent; -webkit-text-stroke:1px rgba(94,234,224,.18); pointer-events:none; user-select:none;
+  }
+  .artigo-meta{display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap;}
+  .artigo-icon{
+    width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+    background:var(--glow-cyan-soft); border:1px solid rgba(94,234,224,.3); color:var(--glow-cyan); flex-shrink:0;
+  }
+  .artigo-icon svg{width:19px; height:19px;}
+  .artigo-inst{
+    font-family:'IBM Plex Mono',monospace; font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--glow-lime);
+  }
+  .artigo-item h3{padding-right:70px;}
+  .artigo-chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:18px;}
+  .artigo-chips span{
+    font-family:'IBM Plex Mono',monospace; font-size:.66rem; letter-spacing:.04em;
+    padding:4px 10px; border-radius:100px; color:var(--texto-suave);
+    background:rgba(242,236,218,.05); border:1px solid rgba(242,236,218,.12);
+  }
+  .artigo-item .fonte-tag{margin-top:auto; padding-top:16px;}
+  .artigo-item .artigo-chips + .fonte-tag{margin-top:18px;}
+
+  /* formulário */
+  .form-card{position:relative;}
+  .form-card::after{
+    content:''; position:absolute; top:-1px; left:24px; right:24px; height:2px; border-radius:2px;
+    background:linear-gradient(90deg,transparent,var(--glow-lime),transparent);
+  }
+  .field input:focus, .field textarea:focus, .field select:focus{outline:none; box-shadow:0 0 0 3px rgba(94,234,224,.14);}
+  .photo-input:hover{background:rgba(94,234,224,.04);}
+
+  /* SOBRE */
+  .sobre-pills{display:flex; gap:10px; flex-wrap:wrap; margin-top:22px;}
+  .sobre-pills span{
+    display:inline-flex; align-items:center; gap:8px; font-size:.82rem; font-weight:600; color:var(--areia-clara);
+    background:var(--vidro-agua); border:1px solid var(--linha); padding:9px 15px; border-radius:100px;
+    transition:border-color .25s, transform .25s, box-shadow .25s;
+  }
+  .sobre-pills span:hover{border-color:rgba(94,234,224,.45); transform:translateY(-2px); box-shadow:0 0 20px -8px rgba(94,234,224,.5);}
+  .sobre-pills i{font-style:normal; width:8px; height:8px; border-radius:50%; background:var(--glow-cyan); box-shadow:0 0 8px var(--glow-cyan);}
+  .sobre-pills span:nth-child(2) i{background:var(--glow-lime); box-shadow:0 0 8px var(--glow-lime);}
+  .sobre-pills span:nth-child(3) i{background:#60a5fa; box-shadow:0 0 8px #60a5fa;}
+  .team-list li{transition:padding-left .2s, color .2s;}
+  .team-list li:hover{padding-left:6px; color:var(--areia-clara);}
+  .team-list li:hover .name{color:var(--glow-cyan);}
+
+  /* RODAPÉ */
+  footer{position:relative; padding:56px 0 28px; background:linear-gradient(180deg, transparent, rgba(13,38,43,.6));}
+  footer::before{
+    content:''; position:absolute; top:-1px; left:10%; right:10%; height:1px;
+    background:linear-gradient(90deg,transparent,var(--glow-cyan),var(--glow-lime),transparent);
+    box-shadow:0 0 14px rgba(94,234,224,.6);
+  }
+  .footer-top{display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:36px; align-items:start;}
+  .footer-top .f-note{margin-top:14px; font-size:.8rem; color:var(--texto-fraco); max-width:440px;}
+  .f-col h5{
+    margin:0 0 12px; font-family:'IBM Plex Mono',monospace; font-size:.68rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--glow-lime); font-weight:500;
+  }
+  .f-col ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px;}
+  .f-col a, .f-col li{font-size:.86rem; color:var(--texto-suave); text-decoration:none; transition:color .2s;}
+  .f-col a:hover{color:var(--glow-cyan);}
+  .footer-bottom{
+    margin-top:36px; padding-top:18px; border-top:1px solid var(--linha);
+    display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+    font-family:'IBM Plex Mono',monospace; font-size:.7rem; color:var(--texto-fraco);
+  }
+  .footer-bottom{padding-right:64px;}
+  .footer-bottom a{color:var(--glow-cyan); text-decoration:none;}
+  .footer-bottom a:hover{text-decoration:underline;}
+
+  /* botão voltar ao topo */
+  .to-top{
+    position:fixed; right:22px; bottom:22px; z-index:55; width:46px; height:46px; border-radius:50%;
+    border:1px solid rgba(94,234,224,.4); background:rgba(8,22,25,.85); backdrop-filter:blur(8px);
+    color:var(--glow-cyan); cursor:pointer; display:flex; align-items:center; justify-content:center;
+    opacity:0; visibility:hidden; transform:translateY(12px); transition:opacity .3s, transform .3s, visibility .3s, box-shadow .25s;
+  }
+  .to-top.show{opacity:1; visibility:visible; transform:none;}
+  .to-top:hover{box-shadow:0 0 22px -4px rgba(94,234,224,.6);}
+  .to-top svg{width:18px; height:18px;}
+
+  /* modais com entrada suave */
+  .modal-overlay.open .modal-card{animation:modalIn .35s cubic-bezier(.2,.8,.2,1);}
+  .lightbox-overlay.open img{animation:modalIn .35s cubic-bezier(.2,.8,.2,1);}
+  @keyframes modalIn{from{opacity:0; transform:translateY(16px) scale(.97);} to{opacity:1; transform:none;}}
+
+  @media (max-width: 880px){
+    .artigos-texto{grid-template-columns:1fr;}
+    .footer-top{grid-template-columns:1fr 1fr;}
+    .footer-top .f-brand{grid-column:1 / -1;}
+  }
+  @media (max-width: 560px){
+    .live-pill{margin-left:0;}
+    .footer-top{grid-template-columns:1fr;}
+    .to-top{right:14px; bottom:14px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .js-fx .reveal{opacity:1; translate:0 0;}
+  }
+
 </style>
+<script>document.documentElement.classList.add('js-fx');</script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 </head>
-<body>
+<body id="top">
+<div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
 
 <header class="nav">
   <div class="nav-inner">
@@ -885,11 +1131,19 @@
             <stop offset="100%" stop-color="#5eeae0" stop-opacity="0"/>
           </radialGradient>
         </defs>
-        <circle cx="200" cy="200" r="170" stroke="rgba(94,234,224,.14)" stroke-width="1"/>
-        <circle cx="200" cy="200" r="120" stroke="rgba(94,234,224,.1)" stroke-width="1"/>
-        <path d="M40 300 C 110 260, 90 190, 160 175 S 260 230, 300 150 S 340 70, 380 60"
+        <circle class="orbit-ring" cx="200" cy="200" r="170" stroke="rgba(94,234,224,.18)" stroke-width="1" stroke-dasharray="2 7"/>
+        <circle class="orbit-ring rev" cx="200" cy="200" r="120" stroke="rgba(94,234,224,.12)" stroke-width="1" stroke-dasharray="30 12"/>
+        <g class="orbit-ring"><circle cx="370" cy="200" r="3" fill="#5eeae0" opacity=".8"/></g>
+        <g class="orbit-ring rev"><circle cx="80" cy="200" r="2.5" fill="#c8f24b" opacity=".8"/></g>
+        <path id="riverPath" d="M40 300 C 110 260, 90 190, 160 175 S 260 230, 300 150 S 340 70, 380 60"
           stroke="url(#riverGrad)" stroke-width="3" stroke-linecap="round" fill="none"
           stroke-dasharray="10 9" style="animation:flow 5s linear infinite"/>
+        <circle r="3.5" fill="#f2ecda" opacity=".9"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#riverPath"/></animateMotion></circle>
+        <circle r="2.5" fill="#c8f24b"><animateMotion dur="7s" begin="-2.3s" repeatCount="indefinite"><mpath href="#riverPath"/></animateMotion></circle>
+        <circle r="2.5" fill="#5eeae0"><animateMotion dur="7s" begin="-4.6s" repeatCount="indefinite"><mpath href="#riverPath"/></animateMotion></circle>
+        <circle cx="160" cy="175" r="5" fill="none" stroke="#5eeae0" stroke-width="1.2"><animate attributeName="r" values="5;30" dur="2.6s" repeatCount="indefinite"/><animate attributeName="opacity" values=".9;0" dur="2.6s" repeatCount="indefinite"/></circle>
+        <circle cx="300" cy="150" r="4" fill="none" stroke="#c8f24b" stroke-width="1.2"><animate attributeName="r" values="4;24" dur="2.6s" begin=".9s" repeatCount="indefinite"/><animate attributeName="opacity" values=".9;0" dur="2.6s" begin=".9s" repeatCount="indefinite"/></circle>
+        <circle cx="40" cy="300" r="4" fill="none" stroke="#5eeae0" stroke-width="1.2"><animate attributeName="r" values="4;22" dur="2.6s" begin="1.7s" repeatCount="indefinite"/><animate attributeName="opacity" values=".9;0" dur="2.6s" begin="1.7s" repeatCount="indefinite"/></circle>
         <circle cx="160" cy="175" r="26" fill="url(#glowDot)"/>
         <circle cx="160" cy="175" r="5" fill="#5eeae0"/>
         <circle cx="300" cy="150" r="20" fill="url(#glowDot)"/>
@@ -974,6 +1228,7 @@
         <div class="clima-desc">Sensação de <span id="clima-sensacao">--</span>°C · <span id="clima-umidade">--</span>% de umidade · vento <span id="clima-vento">--</span> km/h</div>
         <div class="clima-fonte" id="clima-fonte">Carregando dados meteorológicos…</div>
       </div>
+      <span class="live-pill"><span class="live-dot"></span>Ao vivo</span>
     </div>
 
     <div class="rios-grid">
@@ -1101,6 +1356,7 @@
             <h3>Rio Jacuípe</h3>
             <div class="bacia">Trecho urbano · região da BR-116</div>
           </div>
+          <span class="mapa-pin" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
         </div>
         <div class="mapa-frame-wrap">
           <iframe
@@ -1119,6 +1375,7 @@
             <h3>Rio Subaé</h3>
             <div class="bacia">Nascentes · perímetro urbano de Feira</div>
           </div>
+          <span class="mapa-pin" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
         </div>
         <div class="mapa-frame-wrap">
           <iframe
@@ -1137,6 +1394,7 @@
             <h3>Rio Pojuca</h3>
             <div class="bacia">Trecho norte · em direção a Santa Bárbara</div>
           </div>
+          <span class="mapa-pin" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
         </div>
         <div class="mapa-frame-wrap">
           <iframe
@@ -1219,14 +1477,20 @@
 
     <div class="artigos-texto">
       <div class="artigo-item">
+        <span class="artigo-num" aria-hidden="true">01</span>
+        <div class="artigo-meta"><span class="artigo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg></span><span class="artigo-inst">UEFS · Revista Sitientibus</span></div>
         <h3>Degradação e assoreamento no médio curso do Rio Jacuípe</h3>
         <p>Um estudo publicado na revista <em>Sitientibus</em>, da Universidade Estadual de Feira de Santana (UEFS), mapeou décadas de degradação ambiental no médio curso do Rio Jacuípe. A pesquisa mostra como o desmatamento das matas ciliares abriu caminho para o assoreamento do leito do rio, ao mesmo tempo em que o curso d'água passou a ser usado, de forma recorrente, como depósito de lixo e destino de esgoto doméstico. O trabalho reforça, com base em levantamento de campo, o diagnóstico de que a degradação do Jacuípe é um processo antigo e cumulativo, e não um problema pontual.</p>
+        <div class="artigo-chips"><span>Mata ciliar</span><span>Assoreamento</span><span>Lixo e esgoto</span></div>
         <span class="fonte-tag">Fonte: <a href="https://periodicos.uefs.br/index.php/sitientibus/article/view/9714" target="_blank" rel="noopener">Revista Sitientibus (UEFS) — "Era uma vez na Bahia uma bonita floresta: degradação no Rio Jacuípe" ↗</a></span>
       </div>
 
       <div class="artigo-item">
+        <span class="artigo-num" aria-hidden="true">02</span>
+        <div class="artigo-meta"><span class="artigo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/><path d="M2 18c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/><path d="M2 6c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/></svg></span><span class="artigo-inst">UFPE · Rev. Bras. de Geografia Física</span></div>
         <h3>Uso e cobertura da terra na hidrologia do Rio Pojuca</h3>
         <p>Um artigo da Revista Brasileira de Geografia Física, da Universidade Federal de Pernambuco (UFPE), aplicou modelagem hidrológica (modelo SWAT) para simular os efeitos de diferentes cenários de uso e cobertura da terra na bacia do Rio Pojuca. Os resultados indicam que o avanço do desmatamento altera significativamente a vazão e o transporte de sedimentos do rio, enquanto cenários de reflorestamento tendem a reduzir picos de vazão e o carreamento de sedimentos, reforçando a importância da cobertura vegetal na regulação hídrica da bacia.</p>
+        <div class="artigo-chips"><span>Modelo SWAT</span><span>Vazão</span><span>Sedimentos</span><span>Reflorestamento</span></div>
         <span class="fonte-tag">Fonte: <a href="https://periodicos.ufpe.br/revistas/rbgfe/article/view/263709" target="_blank" rel="noopener">Revista Brasileira de Geografia Física (UFPE) — "Uso e cobertura da terra afetam a hidrologia do Rio Pojuca" ↗</a></span>
       </div>
     </div>
@@ -1311,6 +1575,7 @@
       <p>BioGlow é a nova temporada da FIRST LEGO League, dedicada à biodiversidade: as equipes investigam problemas reais que afetam ecossistemas locais e propõem soluções de ciência, tecnologia e criatividade para protegê-los.</p>
       <p>O FeiraWater é o Projeto de Inovação da nossa equipe: uma plataforma dedicada à <strong>água de Feira de Santana</strong>, os rios que sustentam a cidade e que hoje enfrentam poluição, assoreamento e perda de mata ciliar, reunindo dados, pesquisa e a participação direta da comunidade em um único painel.</p>
       <p>Quanto mais pessoas tiverem acesso a essas informações, maior a capacidade da comunidade de agir na preservação do Jacuípe, do Pojuca e do Subaé.</p>
+      <div class="sobre-pills"><span><i></i>Ciência</span><span><i></i>Tecnologia</span><span><i></i>Comunidade</span></div>
     </div>
     <div class="team-card">
       <div class="team-brand">
@@ -1340,11 +1605,45 @@
 </section>
 
 <footer>
-  <div class="wrap footer-inner">
-    <div class="f-logo">FeiraWater</div>
-    <p class="f-note">Projeto de Inovação: FIRST LEGO League, temporada BioGlow 2026/27. Dados de contexto retirados de reportagens e diagnósticos públicos citados na seção Pesquisa; os índices do painel de monitoramento são ilustrativos.</p>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="f-brand">
+        <div class="logo">
+          <span class="dot"></span>
+          <span class="logo-text">
+            <span class="logo-main">Feira<span>Water</span></span>
+            <span class="logo-sub">Projeto BioGlow · Feira de Santana</span>
+          </span>
+        </div>
+        <p class="f-note">Projeto de Inovação: FIRST LEGO League, temporada BioGlow 2026/27. Dados de contexto retirados de reportagens e diagnósticos públicos citados na seção Pesquisa; os índices do painel de monitoramento são ilustrativos.</p>
+      </div>
+      <div class="f-col">
+        <h5>Navegue</h5>
+        <ul>
+          <li><a href="#problema">O problema</a></li>
+          <li><a href="#painel">Painel</a></li>
+          <li><a href="#mapas">Mapas</a></li>
+          <li><a href="#fontes">Fontes</a></li>
+          <li><a href="#reportar">Reportar</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h5>Rios monitorados</h5>
+        <ul>
+          <li>Rio Jacuípe</li>
+          <li>Rio Pojuca</li>
+          <li>Rio Subaé</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 RAV Robotics · Feira de Santana, BA</span>
+      <a href="#top">Voltar ao topo ↑</a>
+    </div>
   </div>
 </footer>
+
+<button class="to-top" id="to-top" type="button" aria-label="Voltar ao topo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></button>
 
 <script>
 (function(){
@@ -1425,12 +1724,13 @@
        match /reports/{id} { allow read: if true; allow write: if request.auth != null; }
      (Firestore Database → aba "Regras", no console do Firebase.) */
   const firebaseConfig = {
-    apiKey: "AIzaSyCUuXQPqOhgWu0cj-aRF3KG1zwbX81XPhI",
-    authDomain: "site-588d9.firebaseapp.com",
-    projectId: "site-588d9",
-    storageBucket: "site-588d9.firebasestorage.app",
-    messagingSenderId: "1001840403797",
-    appId: "1:1001840403797:web:7fb72432d7ec2c44817bdc"
+    apiKey: "AIzaSyBJTB496Q6O_lUFa2zIPmx8hyTJSsi1-aw",
+    authDomain: "feirawater.firebaseapp.com",
+    projectId: "feirawater",
+    storageBucket: "feirawater.firebasestorage.app",
+    messagingSenderId: "1025785992416",
+    appId: "1:1025785992416:web:8b66ea3215fe6e89b7ac85",
+    measurementId: "G-ZCZWYY0E76"
   };
 
   let db = null;
@@ -2362,6 +2662,119 @@
     carregarClima();
     setInterval(carregarClima, 10 * 60 * 1000); // atualiza a cada 10 min
   })();
+})();
+</script>
+
+<script>
+/* ===================== EFEITOS VISUAIS ===================== */
+(function(){
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $$ = (sel, root) => Array.from((root||document).querySelectorAll(sel));
+
+  /* --- barra de progresso, nav e botão de topo --- */
+  const bar = document.getElementById('scroll-progress');
+  const nav = document.querySelector('header.nav');
+  const toTop = document.getElementById('to-top');
+  function onScroll(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? h.scrollTop / max : 0;
+    if(bar) bar.style.transform = 'scaleX(' + p + ')';
+    if(nav) nav.classList.toggle('scrolled', h.scrollTop > 10);
+    if(toTop) toTop.classList.toggle('show', h.scrollTop > 700);
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+  if(toTop) toTop.addEventListener('click', () => window.scrollTo({top:0, behavior: reduce ? 'auto' : 'smooth'}));
+
+  /* --- link ativo na navegação --- */
+  const navLinks = $$('nav.links a[href^="#"]');
+  const sections = navLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  if('IntersectionObserver' in window && sections.length){
+    const navObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if(e.isIntersecting){
+          navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+        }
+      });
+    }, {rootMargin:'-45% 0px -50% 0px'});
+    sections.forEach(s => navObs.observe(s));
+  }
+
+  /* --- brilho que segue o mouse --- */
+  const cardSel = '.rio-card, .stat-card, .fonte-card, .mapa-card, .artigo-item, .form-card, .team-card, .hero-stat, .clima-strip';
+  $$(cardSel).forEach(c => c.classList.add('fx-card'));
+  document.addEventListener('pointermove', e => {
+    const card = e.target.closest && e.target.closest('.fx-card');
+    if(!card) return;
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  }, {passive:true});
+
+  /* --- contadores animados --- */
+  function animateNumber(el){
+    if(el.dataset.counted) return;
+    el.dataset.counted = '1';
+    const original = el.textContent.trim();
+    const m = original.match(/^([^\d]*)(\d+(?:[.,]\d+)?)(.*)$/);
+    if(!m || reduce) return;
+    const prefix = m[1], numStr = m[2], suffix = m[3];
+    const decimals = (numStr.split(/[.,]/)[1] || '').length;
+    const target = parseFloat(numStr.replace(',', '.'));
+    const dur = 1400, start = performance.now();
+    function frame(now){
+      const t = Math.min(1, (now - start) / dur);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const v = (target * eased).toFixed(decimals).replace('.', ',');
+      el.textContent = prefix + v + suffix;
+      if(t < 1) requestAnimationFrame(frame); else el.textContent = original;
+    }
+    el.textContent = prefix + (0).toFixed(decimals).replace('.', ',') + suffix;
+    requestAnimationFrame(frame);
+  }
+
+  /* --- barras do painel crescem ao aparecer --- */
+  const bars = $$('.metric .bar-fill');
+  if(!reduce){
+    bars.forEach(b => { b.dataset.w = b.style.width; b.style.width = '0%'; });
+  }
+  function growBars(card){
+    $$('.metric .bar-fill', card).forEach((b, i) => {
+      if(b.dataset.w) setTimeout(() => { b.style.width = b.dataset.w; }, 120 + i * 140);
+    });
+  }
+
+  /* --- revelar ao rolar --- */
+  const revealSel = '.section-head, .problema-body, .stat-card, .clima-strip, .rio-card, .disclaimer, .fonte-card, .mapa-card, .artigo-item, .form-card, .feed-head, .sobre-body, .team-card, .hero-stat, .footer-top';
+  const revealEls = $$(revealSel);
+  const groups = new Map();
+  revealEls.forEach(el => {
+    el.classList.add('reveal');
+    const parent = el.parentElement;
+    const idx = groups.get(parent) || 0;
+    groups.set(parent, idx + 1);
+    el.style.setProperty('--d', Math.min(idx, 6) * 0.09 + 's');
+  });
+
+  function onVisible(el){
+    el.classList.add('in');
+    $$('.num, .n, .gauge-num', el).forEach(animateNumber);
+    if(el.matches('.hero-stat, .stat-card')) $$('.num, .n', el).forEach(animateNumber);
+    if(el.matches('.rio-card')) growBars(el);
+  }
+
+  if('IntersectionObserver' in window && !reduce){
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if(e.isIntersecting){ onVisible(e.target); obs.unobserve(e.target); }
+      });
+    }, {threshold:0.12, rootMargin:'0px 0px -40px 0px'});
+    revealEls.forEach(el => obs.observe(el));
+  }else{
+    revealEls.forEach(onVisible);
+    bars.forEach(b => { if(b.dataset.w) b.style.width = b.dataset.w; });
+  }
 })();
 </script>
 
